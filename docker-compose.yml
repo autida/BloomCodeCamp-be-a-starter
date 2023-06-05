@@ -6,6 +6,7 @@ services:
     container_name: pg_server_api0121
     ports:
       - '5550:5432'
+#      - "8080:80"
     environment:
       - POSTGRES_USER=docker
       - POSTGRES_PASSWORD=docker

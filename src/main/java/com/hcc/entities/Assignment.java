@@ -1,16 +1,35 @@
 package com.hcc.entities;
 
-import java.util.Objects;
+import javax.persistence.*;
 
+@Entity
+@Table(name = "assignments")
 public class Assignment {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "status")
     private String status;
+
+    @Column(name = "number")
     private Integer number;
+
+    @Column(name = "github_url")
     private String githubUrl;
+
+    @Column(name = "branch")
     private String branch;
+
+    @Column(name = "code_review_video_url")
     private String reviewVideoUrl;
+
+    @Column(name = "user_id")
     private User user;
-//    private User codeReviewer;
+
+    @Column(name = "code_reviewer_id")
+    private User codeReviewer;
 
 
     public Assignment() {} //create a no args constructor

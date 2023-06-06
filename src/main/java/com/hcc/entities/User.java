@@ -1,15 +1,32 @@
 package com.hcc.entities;
 
-import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
 
-public class User {
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+@Entity
+@Table(name = "users")
+public class User implements UserDetails {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "cohort_start_date")
     private LocalDate cohortStartDate;
+
+    @Column(name = "username")
     private String username;
+
+    @Column(name = "password")
     private String password;
+
+    private List<Authority> authorities;
 
     public User(){};
     public User(LocalDate cohortStartDate, String username, String password) {
@@ -38,8 +55,35 @@ public class User {
         return username;
     }
 
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<GrantedAuthority> roles = new ArrayList<>();
+        roles.add((GrantedAuthority) new Authority("role_student"));
+        return roles;
     }
 
     public String getPassword() {
@@ -49,4 +93,6 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+
+
 }

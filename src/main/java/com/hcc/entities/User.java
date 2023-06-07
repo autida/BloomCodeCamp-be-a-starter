@@ -26,8 +26,6 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    private List<Authority> authorities;
-
     public User(){};
     public User(LocalDate cohortStartDate, String username, String password) {
         this.cohortStartDate = cohortStartDate;

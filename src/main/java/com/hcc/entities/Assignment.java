@@ -2,24 +2,23 @@ package com.hcc.entities;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name = "assignments")
+@Entity // marks a Java class as an entity and can be stored in a database
+@Table(name = "assignments") //specifies the table name
 public class Assignment {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id //represents the primary key of the table
+    @GeneratedValue(strategy = GenerationType.IDENTITY) //auto-increment feature in the database
     private Long id;
 
-    @Column(name = "status")
+    @Column // specify the mapping between a Java class field and the corresponding database table column.
     private String status;
 
-    @Column(name = "number")
+    @Column
     private Integer number;
 
     @Column(name = "github_url")
     private String githubUrl;
 
-    @Column(name = "branch")
+    @Column
     private String branch;
 
     @Column(name = "code_review_video_url")
@@ -98,4 +97,6 @@ public class Assignment {
     public void setUser(User user) {
         this.user = user;
     }
+
+
 }

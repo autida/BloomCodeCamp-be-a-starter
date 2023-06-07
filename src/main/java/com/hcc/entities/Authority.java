@@ -13,9 +13,10 @@ public class Authority {
     @Column(name = "authority")
     private String authority;
     @ManyToOne
-    @Column(name = "user_id")
+    @JoinColumn(name = "user_id") //name of the foreign key column in the Authority table
     private User user;
 
+    public Authority(){}
     public Authority(String authority) {
         this.authority = authority;
     }

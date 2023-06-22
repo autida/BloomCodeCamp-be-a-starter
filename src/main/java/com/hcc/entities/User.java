@@ -26,11 +26,22 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
+    @OneToMany(targetEntity = Authority.class, mappedBy = "user")
+    private List<Authority> authorities;
+
     public User(){};
     public User(LocalDate cohortStartDate, String username, String password) {
         this.cohortStartDate = cohortStartDate;
         this.username = username;
         this.password = password;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setAuthorities(List<Authority> authorities) {
+        this.authorities = authorities;
     }
 
     public Long getId() {
@@ -49,9 +60,11 @@ public class User implements UserDetails {
         this.cohortStartDate = cohortStartDate;
     }
 
-    public String getUsername() {
-        return username;
+
+    public void setPassword(String password) {
+        this.password = password;
     }
+
 
     @Override
     public boolean isAccountNonExpired() {
@@ -73,24 +86,21 @@ public class User implements UserDetails {
         return true;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> roles = new ArrayList<>();
-        roles.add((GrantedAuthority) new Authority("role_student"));
+        roles.add(new Authority("role_student"));
         return roles;
     }
 
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
     public String getPassword() {
         return password;
     }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
 
 }

@@ -1,4 +1,4 @@
-package com.hcc.dto;
+package com.hcc.dtos;
 
 public class AssignmentResponseDto {
 }

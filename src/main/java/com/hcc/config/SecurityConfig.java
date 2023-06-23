@@ -43,19 +43,18 @@ public class SecurityConfig  extends WebSecurityConfigurerAdapter {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, exception.getMessage());
         }).and();
 
-
         http.authorizeRequests()
-//                .antMatchers("/login").permitAll()
-                .antMatchers("/test").permitAll()
-                .antMatchers("/api/auth/login").permitAll()
+                .antMatchers("/public").permitAll()
+                .antMatchers("/api/auth/**").permitAll()
                 .anyRequest().authenticated();
 
         http.addFilterBefore(jwtFilt, UsernamePasswordAuthenticationFilter.class);
+
     }
 
     @Override
     @Bean
-    public AuthenticationManager authenticationManager() throws  Exception {
+    public AuthenticationManager authenticationManagerBean() throws  Exception {
         return super.authenticationManagerBean();
     }
 

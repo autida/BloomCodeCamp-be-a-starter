@@ -5,21 +5,18 @@ import com.hcc.entities.User;
 import com.hcc.services.UserDetailServiceImpl;
 import com.hcc.utils.jwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-//@RequestMapping("/api/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -30,13 +27,9 @@ public class AuthController {
     @Autowired
     private jwtUtil jwtTokenUtil;
 
-    @PostMapping("/api/auth/login")
+    @PostMapping("/login")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthCredentialRequest authCredentialRequest)
         throws Exception{
-        System.out.println(authCredentialRequest.getUsername() + " " + authCredentialRequest.getPassword());
-//
-        //usernamePasswordAuthentication
-        //create an auth variable to store the user and password authentication
 
         try {
             Authentication auth = authenticationManager.authenticate(
@@ -45,26 +38,18 @@ public class AuthController {
                             authCredentialRequest.getPassword()
                     )
             );
+                    String token = jwtTokenUtil.generateToken((User) auth.getPrincipal());
+                    return ResponseEntity.ok().header(
+                            HttpHeaders.AUTHORIZATION,
+                            token
+                    ).body("hey");
 
-            User user = (User) auth.getPrincipal();
-            System.out.println(user.getUsername());
-            user.setPassword(null);
-            String token = jwtTokenUtil.generateToken(user);
-//            String token = "test";
-//            System.out.println(token);
-            return ResponseEntity.ok().header(
-                    HttpHeaders.AUTHORIZATION,
-                    token
-            ).body("user.getUsername()");
+//            return ResponseEntity.ok().body("testtestsetst");
         } catch (BadCredentialsException e) {
             throw new Exception("Incorrect username or password", e);
         }
-//
-
-//        return authCredentialRequest.getUsername();
     }
-
-    @GetMapping("/test")
+    @GetMapping("test")
     public String test() {
         return "test";
     }

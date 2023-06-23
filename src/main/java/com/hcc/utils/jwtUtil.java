@@ -6,7 +6,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 
-import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -42,18 +41,8 @@ public class jwtUtil implements Serializable {
         return getClaimFromToken(token, Claims::getExpiration);
     }
     private Claims getAllClaimsFromToken(String token) {
-        System.out.println(Keys.hmacShaKeyFor(secret.getBytes()) + "/n" + token);
-//        Claims claims = Jwts.parserBuilder()
-//                .setSigningKey(Keys.hmacShaKeyFor(secretKey.getBytes()))
-//                .build()
-//                .parseClaimsJws(jwt)
-//                .getBody();
-
-
         return Jwts.parser()
-//                .setSigningKey(secret)
-                .setSigningKey(Keys.hmacShaKeyFor(secret.getBytes()))
-//                .parseClaimsJws(String.valueOf(Keys.hmacShaKeyFor(token.getBytes())))
+                .setSigningKey(secret)
                 .parseClaimsJws(token)
                 .getBody();
     }
@@ -76,7 +65,7 @@ public class jwtUtil implements Serializable {
                 .setClaims(claims)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY*1000))
-                .signWith(SignatureAlgorithm.HS256, secret)
+                .signWith(SignatureAlgorithm.HS256, secret.getBytes())
                 .compact();
     }
 

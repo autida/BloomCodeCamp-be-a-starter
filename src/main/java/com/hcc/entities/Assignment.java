@@ -24,11 +24,12 @@ public class Assignment {
     @Column(name = "code_review_video_url")
     private String reviewVideoUrl;
 
-    @Column(name = "user_id")
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "code_reviewer_id")
-    private User codeReviewer;
+//    @Column(name = "code_reviewer_id")
+//    private User codeReviewer;
 
 
     public Assignment() {} //create a no args constructor
@@ -97,6 +98,5 @@ public class Assignment {
     public void setUser(User user) {
         this.user = user;
     }
-
 
 }

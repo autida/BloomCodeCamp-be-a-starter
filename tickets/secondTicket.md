@@ -139,7 +139,7 @@ public class JwtUtil implements Serializable {
 package com.hcc.filters;
 
 import com.hcc.repositories.UserRepository;
-import com.hcc.utils.JwtUtil;
+import com.hcc.utils.jwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

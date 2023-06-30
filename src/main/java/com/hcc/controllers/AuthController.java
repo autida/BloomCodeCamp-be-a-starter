@@ -1,6 +1,7 @@
 package com.hcc.controllers;
 
 import com.hcc.dtos.AuthCredentialRequest;
+import com.hcc.dtos.RegisterRequest;
 import com.hcc.entities.User;
 import com.hcc.services.UserDetailServiceImpl;
 import com.hcc.utils.jwtUtil;
@@ -13,6 +14,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 
 @RestController
@@ -27,10 +32,12 @@ public class AuthController {
     @Autowired
     private jwtUtil jwtTokenUtil;
 
+
+
     @PostMapping("/login")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthCredentialRequest authCredentialRequest)
         throws Exception{
-
+        HashMap<String, String> response = new HashMap<>();
         try {
             Authentication auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -39,20 +46,22 @@ public class AuthController {
                     )
             );
                     String token = jwtTokenUtil.generateToken((User) auth.getPrincipal());
+                    response.put("accessKey", token);
+                    response.put("roles", "2001");
                     return ResponseEntity.ok().header(
                             HttpHeaders.AUTHORIZATION,
                             token
-                    ).body("hey");
-
-//            return ResponseEntity.ok().body("testtestsetst");
+                    ).body(response);
         } catch (BadCredentialsException e) {
             throw new Exception("Incorrect username or password", e);
         }
     }
-    @GetMapping("test")
-    public String test() {
-        return "test";
+
+    @PostMapping("register")
+    public User createUser(@RequestBody RegisterRequest registerRequest) {
+            User newUser = new User(registerRequest.getCohortStartDate(),
+                     registerRequest.getUsername(),
+                    registerRequest.getPassword());
+            return userDetailService.saveUser(newUser);
     }
-
-
 }

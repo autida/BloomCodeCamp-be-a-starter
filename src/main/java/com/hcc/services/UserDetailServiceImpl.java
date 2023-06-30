@@ -25,4 +25,8 @@ public class UserDetailServiceImpl implements UserDetailsService {
         Optional<User> userOpt = userRepo.findByUsername(username);
         return userOpt.orElseThrow(() -> new UsernameNotFoundException("Invalid Credentials"));
     }
+
+    public User saveUser(User user) {
+        return userRepo.saveAndFlush(user);
+    }
 }

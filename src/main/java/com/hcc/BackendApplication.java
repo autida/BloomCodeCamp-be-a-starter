@@ -9,6 +9,7 @@ import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 
 @SpringBootApplication
+
 public class BackendApplication {
 
 	public static void main(String[] args) {

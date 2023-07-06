@@ -21,7 +21,7 @@ public class AssignmentController {
         List<Assignment> assignmentsByUser = assignmentService.findByUser(user.getId());
 
 //        return ResponseEntity.ok().body(assignmentsByUser);
-        System.out.println(assignmentsByUser);
+
         return assignmentsByUser;
     }
 
@@ -31,7 +31,8 @@ public class AssignmentController {
                                             @AuthenticationPrincipal User user) {
         assignment.setUser(user);
         Assignment newAssignment = assignmentService.saveAssignment(assignment);
-        return ResponseEntity.ok().body(newAssignment);
+
+        return  ResponseEntity.ok().body(newAssignment);
     }
 
 
@@ -39,8 +40,6 @@ public class AssignmentController {
     public Optional<Assignment> getAssignmentsById(@PathVariable Long id,
                                                    @AuthenticationPrincipal User user) {
         return assignmentService.findById(id);
-
-//        return ResponseEntity.ok().body(assignmentsByUser);
     }
 
     @PutMapping("{id}")

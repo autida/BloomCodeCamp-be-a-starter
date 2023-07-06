@@ -28,8 +28,9 @@ public class Assignment {
     @JoinColumn(name = "user_id")
     private User user;
 
-//    @Column(name = "code_reviewer_id")
-//    private User codeReviewer;
+    @ManyToOne
+    @JoinColumn(name = "code_reviewer_id")
+    private User codeReviewer;
 
 
     public Assignment() {} //create a no args constructor

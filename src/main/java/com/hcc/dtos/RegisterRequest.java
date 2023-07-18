@@ -8,14 +8,16 @@ public class RegisterRequest {
     private LocalDate cohortStartDate;
     private String password;
     private String username;
+    private String role;
 
 
 
-    public RegisterRequest(LocalDate cohortStartDate, String password, String username) {
+    public RegisterRequest(LocalDate cohortStartDate, String password, String username, String role) {
 
         this.cohortStartDate = cohortStartDate;
         this.password = password;
         this.username = username;
+        this.role = role;
     }
 
     public LocalDate getCohortStartDate() {
@@ -40,5 +42,23 @@ public class RegisterRequest {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    @Override
+    public String toString() {
+        return "RegisterRequest{" +
+                "cohortStartDate=" + cohortStartDate +
+                ", password='" + password + '\'' +
+                ", username='" + username + '\'' +
+                ", role='" + role + '\'' +
+                '}';
     }
 }

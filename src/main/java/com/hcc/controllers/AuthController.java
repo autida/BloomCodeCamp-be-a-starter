@@ -2,7 +2,9 @@ package com.hcc.controllers;
 
 import com.hcc.dtos.AuthCredentialRequest;
 import com.hcc.dtos.RegisterRequest;
+import com.hcc.entities.Authority;
 import com.hcc.entities.User;
+import com.hcc.services.AuthorityService;
 import com.hcc.services.UserDetailServiceImpl;
 import com.hcc.utils.jwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +17,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.time.LocalDate;
+import java.time.chrono.ChronoLocalDate;
+import java.util.*;
 
 
 @RestController
@@ -28,6 +30,9 @@ public class AuthController {
 
     @Autowired
     private UserDetailServiceImpl userDetailService;
+
+    @Autowired
+    private AuthorityService authorityService;
 
     @Autowired
     private jwtUtil jwtTokenUtil;
@@ -45,9 +50,12 @@ public class AuthController {
                             authCredentialRequest.getPassword()
                     )
             );
-                    String token = jwtTokenUtil.generateToken((User) auth.getPrincipal());
+                    User user = (User) auth.getPrincipal();
+                    String token = jwtTokenUtil.generateToken(user);
+
                     response.put("accessKey", token);
-                    response.put("roles", "2001");
+                    String userRole = auth.getAuthorities().stream().findFirst().get().getAuthority();
+                    response.put("roles", userRole);
                     return ResponseEntity.ok().header(
                             HttpHeaders.AUTHORIZATION,
                             token
@@ -58,10 +66,22 @@ public class AuthController {
     }
 
     @PostMapping("register")
-    public User createUser(@RequestBody RegisterRequest registerRequest) {
-            User newUser = new User(registerRequest.getCohortStartDate(),
-                     registerRequest.getUsername(),
+    public String createUser(@RequestBody RegisterRequest registerRequest) throws Exception {
+        if(registerRequest.getRole() == null)
+            return ("Role Required");
+        try {
+            User newUser = new User(
+                    LocalDate.now(),
+                    registerRequest.getUsername(),
                     registerRequest.getPassword());
-            return userDetailService.saveUser(newUser);
+            Authority authority = new Authority(registerRequest.getRole());
+            authority.setUser(newUser);
+            newUser.setAuthorities(Collections.singletonList(authority));
+            userDetailService.saveUser(newUser);
+            return "Successfully Registered.";
+        } catch (Exception e) {
+            return "Registration Failed.";
+        }
+
     }
 }

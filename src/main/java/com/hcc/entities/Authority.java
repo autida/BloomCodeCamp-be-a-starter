@@ -14,8 +14,8 @@ public class Authority implements GrantedAuthority {
 
     @Column(name = "authority")
     private String authority;
-    @ManyToOne
-    @JoinColumn(name = "user_id") //name of the foreign key column in the Authority table
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false) //name of the foreign key column in the Authority table
     private User user;
 
     public Authority(){}

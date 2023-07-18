@@ -1,6 +1,7 @@
 package com.hcc.entities;
 
 
+import org.hibernate.Hibernate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -26,7 +27,9 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
-    @OneToMany(targetEntity = Authority.class, mappedBy = "user")
+    @OneToMany(fetch = FetchType.EAGER, targetEntity = Authority.class , cascade = CascadeType.ALL, mappedBy = "user")
+//    @JoinColumn(name="user_id", referencedColumnName="id")
+//    @OneToMany(targetEntity = Authority.class, mappedBy = "user")
     private List<Authority> authorities;
 
     public User(){};
@@ -88,8 +91,12 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (authorities == null || !Hibernate.isInitialized(authorities)) {
+            // Fetch the authorities collection within an active Hibernate session
+            Hibernate.initialize(authorities);
+        }
         List<GrantedAuthority> roles = new ArrayList<>();
-        roles.add(new Authority("role_student"));
+        authorities.forEach(authority -> roles.add(authority));
         return roles;
     }
 

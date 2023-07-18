@@ -35,13 +35,14 @@ public class Assignment {
 
     public Assignment() {} //create a no args constructor
 
-    public Assignment(String status, Integer number, String githubUrl, String branch, String reviewVideoUrl, User user) {
+    public Assignment(String status, Integer number, String githubUrl, String branch, String reviewVideoUrl, User user, User codeReviewer) {
         this.status = status;
         this.number = number;
         this.githubUrl = githubUrl;
         this.branch = branch;
         this.reviewVideoUrl = reviewVideoUrl;
         this.user = user;
+        this.codeReviewer = codeReviewer;
     }
 
     public Long getId() {
@@ -100,4 +101,25 @@ public class Assignment {
         this.user = user;
     }
 
+    public User getCodeReviewer() {
+        return codeReviewer;
+    }
+
+    public void setCodeReviewer(User codeReviewer) {
+        this.codeReviewer = codeReviewer;
+    }
+
+    @Override
+    public String toString() {
+        return "Assignment{" +
+                "id=" + id +
+                ", status='" + status + '\'' +
+                ", number=" + number +
+                ", githubUrl='" + githubUrl + '\'' +
+                ", branch='" + branch + '\'' +
+                ", reviewVideoUrl='" + reviewVideoUrl + '\'' +
+                ", user=" + user +
+                ", codeReviewer=" + codeReviewer +
+                '}';
+    }
 }

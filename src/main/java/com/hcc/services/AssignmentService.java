@@ -19,8 +19,12 @@ public class AssignmentService {
 
 
     public Assignment saveAssignment(Assignment assignment) throws CreateAssignmentException {
-        Assignment newAssignment = assignmentRepository.saveAndFlush(assignment);
-        return newAssignment;
+        try {
+            Assignment newAssignment = assignmentRepository.saveAndFlush(assignment);
+            return newAssignment;
+        } catch (Exception e) {
+            throw new CreateAssignmentException("Failed to create the assignment.", e);
+        }
     }
 
 
@@ -28,7 +32,7 @@ public class AssignmentService {
         return assignmentRepository.findById(id);
     }
 
-        public List<Assignment> findByUser(Long id) {
+    public List<Assignment> findByUser(Long id) {
             return assignmentRepository.findByUserId(id);
     }
 

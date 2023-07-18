@@ -1,5 +1,7 @@
 package com.hcc.controllers;
 
+import com.hcc.dtos.AssignmentResponseDto;
+import com.hcc.dtos.CareersResponseDto;
 import com.hcc.entities.Assignment;
 import com.hcc.entities.User;
 import com.hcc.services.AssignmentService;
@@ -8,53 +10,94 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/assignments")
 public class AssignmentController {
+
     @Autowired
     private AssignmentService assignmentService;
     @GetMapping
-    public List<Assignment> getAssignmentsByUser(@AuthenticationPrincipal User user) {
+    public List<AssignmentResponseDto> getAssignmentsByUser(@AuthenticationPrincipal User user) {
+        List<AssignmentResponseDto> assignmentResponseDtoList = new ArrayList<>();
         List<Assignment> assignmentsByUser = assignmentService.findByUser(user.getId());
+        assignmentsByUser.stream().forEach(assignment -> {
+            assignmentResponseDtoList.add(setDtoValue(Optional.of(assignment)));
+        });
 
-//        return ResponseEntity.ok().body(assignmentsByUser);
-
-        return assignmentsByUser;
+        return assignmentResponseDtoList;
     }
 
 
     @PostMapping
-    public ResponseEntity<?> saveAssignments(@RequestBody Assignment assignment,
-                                            @AuthenticationPrincipal User user) {
-        assignment.setUser(user);
-        Assignment newAssignment = assignmentService.saveAssignment(assignment);
-
-        return  ResponseEntity.ok().body(newAssignment);
+    public AssignmentResponseDto saveAssignments(@RequestBody Assignment assignment,
+                                                 @AuthenticationPrincipal User user) throws Exception {
+        try {
+            assignment.setUser(user);
+            Assignment newAssignment = assignmentService.saveAssignment(assignment);
+           return setDtoValue(Optional.of(newAssignment));
+        } catch (Exception e) {
+            throw new Exception("Something went wrong.", e);
+        }
     }
+
+
 
 
     @GetMapping("{id}")
-    public Optional<Assignment> getAssignmentsById(@PathVariable Long id,
-                                                   @AuthenticationPrincipal User user) {
-        return assignmentService.findById(id);
+    public AssignmentResponseDto getAssignmentsById(@PathVariable Long id,
+                                                    @AuthenticationPrincipal User user) throws Exception {
+        if(!user.isCredentialsNonExpired()) {
+            throw new Exception("Invalid user");
+        }
+        try {
+            Optional<Assignment> assignment = assignmentService.findById(id);
+            return setDtoValue(assignment);
+        } catch (Exception e) {
+            throw new Exception("Something went wrong.", e);
+        }
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<?> updateAssignment(@PathVariable Long id,
+    public AssignmentResponseDto updateAssignment(@PathVariable Long id,
                                               @RequestBody Assignment updateAssignment,
                                               @AuthenticationPrincipal User user) throws Exception {
-        Optional<Assignment> assignmentOpt = getAssignmentsById(id, user);
-        assignmentOpt.orElseThrow(() -> new Exception("Assignment is not found."));
+        try {
+            Optional<Assignment> assignment = assignmentService.findById(id);
 
-        assignmentOpt.get().setBranch(updateAssignment.getBranch());
-        assignmentOpt.get().setGithubUrl(updateAssignment.getGithubUrl());
-        assignmentOpt.get().setNumber(updateAssignment.getNumber());
-        assignmentOpt.get().setUser(user);
-        assignmentOpt.get().setReviewVideoUrl(updateAssignment.getReviewVideoUrl());
-        assignmentOpt.get().setStatus(updateAssignment.getStatus());
-        return saveAssignments(assignmentOpt.get(), user);
+            assignment.get().setBranch(updateAssignment.getBranch());
+            assignment.get().setGithubUrl(updateAssignment.getGithubUrl());
+            assignment.get().setNumber(updateAssignment.getNumber());
+            assignment.get().setReviewVideoUrl(updateAssignment.getReviewVideoUrl());
+            assignment.get().setStatus(updateAssignment.getStatus());
+
+            //Create new Assignment
+            return saveAssignments(assignment.get(), user);
+        } catch (Exception e) {
+            throw new Exception("Update assignment error.",e);
+        }
+
     }
+
+    private AssignmentResponseDto setDtoValue(Optional<Assignment> assignment) {
+        AssignmentResponseDto assignmentResponseDto = new AssignmentResponseDto();
+        assignmentResponseDto.setId(assignment.get().getId());
+        assignmentResponseDto.setBranch(assignment.get().getBranch());
+        assignmentResponseDto.setNumber(assignment.get().getNumber());
+        assignmentResponseDto.setGithubUrl(assignment.get().getGithubUrl());
+        assignmentResponseDto.setReviewVideoUrl(assignment.get().getReviewVideoUrl());
+        assignmentResponseDto.setStatus(assignment.get().getStatus());
+        if(assignment.get().getCodeReviewer() != null) {
+            assignmentResponseDto.setCodeReviewerId(assignment.get().getCodeReviewer().getId());
+        }
+        if(assignment.get().getUser() != null) {
+            assignmentResponseDto.setUserId(assignment.get().getUser().getId());
+        }
+        return assignmentResponseDto;
+    }
+
+
 }

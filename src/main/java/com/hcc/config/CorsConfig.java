@@ -6,20 +6,27 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class CorsConfig {
+public class CorsConfig implements WebMvcConfigurer{
+//    @Bean
+//    public WebMvcConfigurer corsConfigurer() {
+//        return new WebMvcConfigurer() {
+//            @Override
+//            public void addCorsMappings(CorsRegistry registry) {
+//                registry.addMapping("/api/**")
+//                        .allowedOrigins("http://localhost:3000") // Replace with the origin of your React app
+//                        .allowedMethods("GET", "POST", "PUT", "DELETE") // Add the HTTP methods you need
+//                        .allowedHeaders("*") // Add any specific headers required by your requests
+//                        .allowCredentials(true); // If your requests require credentials (e.g., cookies)
+//            }
+//        };
+//    }
 
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/**")
-                        .allowedOrigins("http://localhost:3000") // Replace with the origin of your React app
-                        .allowedMethods("GET", "POST", "PUT", "DELETE") // Add the HTTP methods you need
-                        .allowedHeaders("*") // Add any specific headers required by your requests
-                        .allowCredentials(true); // If your requests require credentials (e.g., cookies)
-            }
-        };
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("http://localhost:3000")
+                .allowedMethods("GET", "POST", "PUT", "DELETE");
     }
 }
 

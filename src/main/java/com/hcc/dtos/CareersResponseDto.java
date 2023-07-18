@@ -1,7 +1,7 @@
 package com.hcc.dtos;
 
 public class CareersResponseDto {
-    private int id;
+    private Long id;
     private String title;
     private double salary;
     private String location;
@@ -10,7 +10,7 @@ public class CareersResponseDto {
     public CareersResponseDto() {
     }
 
-    public CareersResponseDto(int id, String title, double salary, String location) {
+    public CareersResponseDto(Long id, String title, double salary, String location) {
         this.id = id;
         this.title = title;
         this.salary = salary;
@@ -18,11 +18,11 @@ public class CareersResponseDto {
     }
 
     // Getters and Setters
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

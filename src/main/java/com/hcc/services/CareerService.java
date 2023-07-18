@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class CareerService {
     @Autowired
@@ -15,5 +17,8 @@ public class CareerService {
 
     public List<Career> findAll() {
         return careerRepository.findAll();
+    }
+    public Optional<Career> findById(Long id) {
+        return careerRepository.findById(id);
     }
 }
